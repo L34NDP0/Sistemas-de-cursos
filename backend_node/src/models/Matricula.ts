@@ -8,6 +8,8 @@ class Matricula extends Model {
     public curso_id!: number;
     public aluno_id!: number;
     public data_matricula!: Date;
+    Aluno: any;
+    Curso: any;
 }
 
 Matricula.init(

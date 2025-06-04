@@ -22,13 +22,14 @@ router.get('/', async (req: Request, res: Response) => {
 // Criar matrícula(s)
 router.post('/',
     [
-        body('*.curso_id').isInt().withMessage('ID do curso inválido'),
-        body('*.aluno_id').isInt().withMessage('ID do aluno inválido'),
+        body('curso_id').isInt().withMessage('ID do curso inválido'),
+        body('aluno_id').isInt().withMessage('ID do aluno inválido'),
     ],
     validateRequest,
     async (req: Request, res: Response) => {
         try {
             const data = req.body;
+            console.log('Dados recebidos para matrícula:', req.body);
 
             if ('matriculas' in data) {
                 // Processar múltiplas matrículas

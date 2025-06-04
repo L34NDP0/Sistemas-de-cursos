@@ -20,16 +20,36 @@ router.get('/', async (req: Request, res: Response) => {
 // Criar aluno(s)
 router.post('/',
     [
-        body('*.name').isLength({ min: 3 }).withMessage('Nome deve ter pelo menos 3 caracteres'),
-        body('*.email').isEmail().withMessage('Email inválido'),
+        body('name').isLength({ min: 3 }).withMessage('Nome deve ter pelo menos 3 caracteres'),
+        body('email').isEmail().withMessage('Email inválido'),
     ],
     validateRequest,
     async (req: Request, res: Response) => {
         try {
             const data = req.body;
-            // ... resto do código
+
+            // Verificar email duplicado
+            const emailExistente = await Aluno.findOne({
+                where: { email: data.email }
+            });
+
+            if (emailExistente) {
+                return res.status(400).json({
+                    error: 'Email já cadastrado',
+                    campo: 'email',
+                    mensagem: `Email ${data.email} já está em uso`
+                });
+            }
+
+            const aluno = await Aluno.create(data);
+            res.status(201).json(aluno);
         } catch (error) {
-            res.status(400).json({ error: 'Erro ao criar aluno' });
+            console.error('Erro ao criar aluno:', error);
+            res.status(400).json({
+                error: 'Erro ao criar aluno',
+                campo: 'geral',
+                mensagem: 'Erro ao criar aluno'
+            });
         }
     }
 );
